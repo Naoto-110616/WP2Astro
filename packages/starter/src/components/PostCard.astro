@@ -1,0 +1,40 @@
+---
+import { urlFor } from '~/sanity/client';
+import type { Post } from '~/sanity/types';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const formattedDate = new Date(post.publishedAt).toLocaleDateString('ja-JP', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const imageUrl = post.mainImage ? urlFor(post.mainImage).width(800).height(450).url() : null;
+---
+
+<article class="group overflow-hidden rounded-2xl border border-slate-200 transition hover:border-slate-300 hover:shadow-lg dark:border-slate-800 dark:hover:border-slate-700">
+  <a href={`/blog/${post.slug}`} class="block">
+    {
+      imageUrl && (
+        <img
+          src={imageUrl}
+          alt={post.mainImage?.alt ?? post.title}
+          loading="lazy"
+          class="aspect-video w-full object-cover transition group-hover:scale-105"
+          width="800"
+          height="450"
+        />
+      )
+    }
+    <div class="p-5">
+      <p class="text-xs text-slate-500 dark:text-slate-400">{formattedDate}</p>
+      <h2 class="mt-2 line-clamp-2 text-lg font-semibold tracking-tight">
+        {post.title}
+      </h2>
+      {post.excerpt && <p class="mt-2 line-clamp-3 text-sm text-slate-600 dark:text-slate-400">{post.excerpt}</p>}
+    </div>
+  </a>
+</article>

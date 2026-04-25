@@ -1,0 +1,119 @@
+---
+import Layout from '~/layouts/Layout.astro';
+---
+
+<Layout title="お問い合わせ" description="お問い合わせフォーム">
+  <section class="mx-auto max-w-2xl py-8">
+    <h1 class="text-3xl font-bold tracking-tight">お問い合わせ</h1>
+    <p class="mt-2 text-slate-600 dark:text-slate-400">
+      下記フォームからご連絡ください。1〜3営業日以内に返信します。
+    </p>
+
+    <form id="contact-form" class="mt-8 space-y-5" novalidate>
+      <div>
+        <label for="name" class="block text-sm font-medium">お名前</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          required
+          autocomplete="name"
+          class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900"
+        />
+      </div>
+
+      <div>
+        <label for="email" class="block text-sm font-medium">メールアドレス</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          autocomplete="email"
+          class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900"
+        />
+      </div>
+
+      <div>
+        <label for="subject" class="block text-sm font-medium">件名</label>
+        <input
+          type="text"
+          id="subject"
+          name="subject"
+          class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900"
+        />
+      </div>
+
+      <div>
+        <label for="message" class="block text-sm font-medium">お問い合わせ内容</label>
+        <textarea
+          id="message"
+          name="message"
+          required
+          rows="6"
+          class="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 shadow-sm focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 dark:border-slate-700 dark:bg-slate-900"
+        ></textarea>
+      </div>
+
+      <!-- honeypot for bots -->
+      <input
+        type="text"
+        name="website"
+        tabindex="-1"
+        autocomplete="off"
+        class="absolute left-[-10000px] h-0 w-0 opacity-0"
+        aria-hidden="true"
+      />
+
+      <button
+        type="submit"
+        id="submit-btn"
+        class="rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+      >
+        送信する
+      </button>
+
+      <p id="form-status" class="text-sm" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+</Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const status = document.getElementById('form-status') as HTMLParagraphElement | null;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement | null;
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form || !status || !submitBtn) return;
+
+    submitBtn.disabled = true;
+    status.textContent = '送信中...';
+    status.className = 'text-sm text-slate-500';
+
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? '送信に失敗しました');
+      }
+
+      status.textContent = '送信しました。ありがとうございます。';
+      status.className = 'text-sm text-green-600';
+      form.reset();
+    } catch (err) {
+      status.textContent = err instanceof Error ? err.message : '送信に失敗しました';
+      status.className = 'text-sm text-red-600';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>

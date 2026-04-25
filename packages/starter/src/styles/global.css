@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --font-sans: "Inter", "Hiragino Sans", "Yu Gothic", system-ui, -apple-system, BlinkMacSystemFont,
+    sans-serif;
+  --color-brand-50: oklch(0.97 0.02 260);
+  --color-brand-500: oklch(0.55 0.22 260);
+  --color-brand-600: oklch(0.48 0.22 260);
+  --color-brand-700: oklch(0.42 0.22 260);
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}

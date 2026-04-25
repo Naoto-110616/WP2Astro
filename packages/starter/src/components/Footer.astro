@@ -1,0 +1,19 @@
+---
+import type { SiteSettings } from '~/sanity/types';
+
+interface Props {
+  settings: SiteSettings | null;
+}
+
+const { settings } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-16 border-t border-slate-200/60 py-8 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400">
+  <div class="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8">
+    <p>&copy; {year} {settings?.title ?? 'WP2Astro'}. All rights reserved.</p>
+    <p>
+      Built with <a href="https://astro.build" class="underline hover:text-slate-900 dark:hover:text-slate-50">Astro</a> &amp; <a href="https://www.sanity.io" class="underline hover:text-slate-900 dark:hover:text-slate-50">Sanity</a>
+    </p>
+  </div>
+</footer>

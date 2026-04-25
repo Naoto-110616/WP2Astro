@@ -1,0 +1,50 @@
+---
+import '~/styles/global.css';
+import Footer from '~/components/Footer.astro';
+import Header from '~/components/Header.astro';
+import { sanityClient } from '~/sanity/client';
+import { siteSettingsQuery } from '~/sanity/queries';
+import type { SiteSettings } from '~/sanity/types';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const { title, description, image } = Astro.props;
+const settings = await sanityClient.fetch<SiteSettings | null>(siteSettingsQuery).catch(() => null);
+
+const siteTitle = settings?.title ?? 'WP2Astro';
+const siteDescription = settings?.description ?? 'A modern site built with Astro and Sanity.';
+const pageTitle = title ? `${title} | ${siteTitle}` : siteTitle;
+const pageDescription = description ?? siteDescription;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? import.meta.env.PUBLIC_SITE_URL);
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl.toString()} />
+    <link rel="alternate" type="application/rss+xml" title={siteTitle} href="/rss.xml" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl.toString()} />
+    {image && <meta property="og:image" content={image} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class="min-h-screen bg-white text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+    <Header settings={settings} />
+    <main class="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+      <slot />
+    </main>
+    <Footer settings={settings} />
+  </body>
+</html>

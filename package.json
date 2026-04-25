@@ -1,0 +1,23 @@
+{
+  "name": "wp2astro",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WordPress to Astro + Sanity migration toolkit. Ship a modern static site with a headless CMS, Cloudflare Pages hosting, and Resend contact form.",
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --filter @wp2astro/starter dev",
+    "build": "pnpm -r build",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "migrate": "pnpm --filter @wp2astro/migrator start"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "typescript": "^5.7.2"
+  },
+  "packageManager": "pnpm@10.11.1",
+  "engines": {
+    "node": ">=20.11.0",
+    "pnpm": ">=9.0.0"
+  }
+}

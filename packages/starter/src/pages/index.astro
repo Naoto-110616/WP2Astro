@@ -1,0 +1,45 @@
+---
+import PostCard from '~/components/PostCard.astro';
+import Layout from '~/layouts/Layout.astro';
+import { sanityClient } from '~/sanity/client';
+import { allPostsQuery } from '~/sanity/queries';
+import type { Post } from '~/sanity/types';
+
+const posts = await sanityClient.fetch<Post[]>(allPostsQuery).catch(() => [] as Post[]);
+const latest = posts.slice(0, 6);
+---
+
+<Layout title="Home">
+  <section class="py-12 sm:py-16">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">
+      WordPressから、<br />モダンな静的サイトへ。
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg text-slate-600 dark:text-slate-400">
+      Astro + Sanity + Cloudflare Pagesで、速くて安全で、運用コストの低いサイトを実現します。
+    </p>
+    <div class="mt-8 flex gap-4">
+      <a href="/blog" class="rounded-full bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
+        ブログを読む
+      </a>
+      <a href="/contact" class="rounded-full border border-slate-300 px-6 py-3 text-sm font-medium transition hover:border-slate-400 dark:border-slate-700 dark:hover:border-slate-600">
+        お問い合わせ
+      </a>
+    </div>
+  </section>
+
+  {
+    latest.length > 0 && (
+      <section class="py-12">
+        <div class="flex items-end justify-between">
+          <h2 class="text-2xl font-bold tracking-tight">最新の記事</h2>
+          <a href="/blog" class="text-sm text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-50">
+            すべて見る →
+          </a>
+        </div>
+        <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {latest.map((post) => <PostCard post={post} />)}
+        </div>
+      </section>
+    )
+  }
+</Layout>

@@ -1,0 +1,26 @@
+---
+import PostCard from '~/components/PostCard.astro';
+import Layout from '~/layouts/Layout.astro';
+import { sanityClient } from '~/sanity/client';
+import { allPostsQuery } from '~/sanity/queries';
+import type { Post } from '~/sanity/types';
+
+const posts = await sanityClient.fetch<Post[]>(allPostsQuery).catch(() => [] as Post[]);
+---
+
+<Layout title="ブログ" description="記事一覧">
+  <section class="py-8">
+    <h1 class="text-3xl font-bold tracking-tight">ブログ</h1>
+    <p class="mt-2 text-slate-600 dark:text-slate-400">{posts.length} 件の記事</p>
+  </section>
+
+  {
+    posts.length === 0 ? (
+      <p class="text-slate-500">まだ記事がありません。Sanity Studioから投稿してください。</p>
+    ) : (
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((post) => <PostCard post={post} />)}
+      </div>
+    )
+  }
+</Layout>
