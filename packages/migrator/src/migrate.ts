@@ -128,7 +128,8 @@ async function migrateOne(
     .filter((c) => c.domain === 'category')
     .map((c) => ({ _type: 'reference', _ref: categoryDocId(c.slug) }));
 
-  const doc: Record<string, unknown> = {
+  type SanityDoc = { _id: string; _type: string } & Record<string, unknown>;
+  const doc: SanityDoc = {
     _id: isPage ? pageDocId(item.id) : postDocId(item.id),
     _type: isPage ? 'page' : 'post',
     title: item.title,

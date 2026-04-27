@@ -14,7 +14,8 @@ export async function downloadAndUpload(url: string, client: SanityClient): Prom
   }
   const buffer = Buffer.from(await res.arrayBuffer());
   const filename = decodeURIComponent(url.split('/').pop() ?? 'image');
-  const contentType = res.headers.get('content-type') ?? mimeLookup(filename) ?? 'image/jpeg';
+  const detectedType = mimeLookup(filename);
+  const contentType = res.headers.get('content-type') ?? (detectedType || 'image/jpeg');
 
   const asset = await client.assets.upload('image', buffer, {
     filename,

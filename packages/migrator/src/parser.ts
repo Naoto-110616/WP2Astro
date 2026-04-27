@@ -10,8 +10,8 @@ const parser = new XMLParser({
   trimValues: true,
 });
 
-const asArray = <T>(v: T | T[] | undefined): T[] =>
-  v === undefined ? [] : Array.isArray(v) ? v : [v];
+const asArray = <T>(v: unknown): T[] =>
+  v === undefined || v === null ? [] : Array.isArray(v) ? (v as T[]) : [v as T];
 
 const text = (node: unknown): string => {
   if (node === undefined || node === null) return '';

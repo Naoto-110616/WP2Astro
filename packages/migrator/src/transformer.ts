@@ -58,19 +58,25 @@ export interface HtmlToBlocksOptions {
   imageUrlToAssetId?: Map<string, string>;
 }
 
-export function htmlToPortableText(html: string, options: HtmlToBlocksOptions = {}) {
+export type PortableTextLike = Record<string, unknown>;
+
+export function htmlToPortableText(
+  html: string,
+  options: HtmlToBlocksOptions = {},
+): PortableTextLike[] {
   if (!html || !html.trim()) return [];
 
   const normalizedHtml = normalizeWordPressHtml(html);
 
-  return htmlToBlocks(normalizedHtml, blockContentType, {
+  const blocks = htmlToBlocks(normalizedHtml, blockContentType, {
     parseHtml: (h) => new JSDOM(h).window.document,
     rules: [
       {
         deserialize(el, _next, block) {
-          if (el.tagName?.toLowerCase() !== 'img') return undefined;
-          const src = el.getAttribute('src') ?? '';
-          const alt = el.getAttribute('alt') ?? '';
+          const element = el as Element;
+          if (element.tagName?.toLowerCase() !== 'img') return undefined;
+          const src = element.getAttribute('src') ?? '';
+          const alt = element.getAttribute('alt') ?? '';
           const assetId = options.imageUrlToAssetId?.get(src);
           if (!assetId) {
             return block({
@@ -88,6 +94,8 @@ export function htmlToPortableText(html: string, options: HtmlToBlocksOptions = 
       },
     ],
   });
+
+  return blocks as unknown as PortableTextLike[];
 }
 
 function normalizeWordPressHtml(html: string): string {
