@@ -21,7 +21,7 @@
 | Build command | `npx pnpm@10 install --frozen-lockfile && npx pnpm@10 --filter @wp2astro/starter build` |
 | Build output directory | `packages/starter/dist` |
 | Root directory | `/` (空欄) |
-| Node version | `20` (環境変数 `NODE_VERSION=20` で指定) |
+| Node version | `22` (環境変数 `NODE_VERSION=22` で指定) |
 
 ### 3. 環境変数
 
@@ -29,7 +29,7 @@
 
 | 変数名 | 値 | 暗号化 |
 |---|---|---|
-| `NODE_VERSION` | `20` | — |
+| `NODE_VERSION` | `22` | — |
 | `PUBLIC_SANITY_PROJECT_ID` | (Sanity Project ID) | — |
 | `PUBLIC_SANITY_DATASET` | `production` | — |
 | `PUBLIC_SITE_URL` | `https://your-domain.com` | — |
