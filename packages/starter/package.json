@@ -16,15 +16,15 @@
     "typegen": "sanity schema extract --path=./src/sanity/extract.json && sanity typegen generate"
   },
   "dependencies": {
-    "@astrojs/rss": "^4.0.11",
-    "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.2",
     "@portabletext/to-html": "^2.0.14",
     "@sanity/client": "^6.24.1",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.68.3",
     "@tailwindcss/typography": "^0.5.15",
     "@tailwindcss/vite": "^4.0.0",
-    "astro": "^5.1.6",
+    "astro": "^6.1.9",
     "groq": "^3.68.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
