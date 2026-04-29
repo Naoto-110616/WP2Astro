@@ -1,6 +1,7 @@
 import { htmlToBlocks } from '@sanity/block-tools';
 import { Schema } from '@sanity/schema';
 import { JSDOM } from 'jsdom';
+import type { PortableTextLike } from './types.js';
 
 const blockContentType = Schema.compile({
   name: 'wp2astro',
@@ -58,7 +59,20 @@ export interface HtmlToBlocksOptions {
   imageUrlToAssetId?: Map<string, string>;
 }
 
-export type PortableTextLike = Record<string, unknown>;
+/**
+ * Strip Gutenberg block comments and normalize WordPress-flavored HTML so it
+ * round-trips well into Portable Text.
+ */
+export function normalizeWordPressHtml(html: string): string {
+  return html
+    .replace(/<!--\s*wp:[^>]*-->/g, '')
+    .replace(/<!--\s*\/wp:[^>]*-->/g, '')
+    .replace(/\r\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/(?<!<\/(?:p|h[1-6]|li|blockquote|pre|ul|ol)>)\n\n/g, '</p><p>')
+    .replace(/^(?!<)/, '<p>')
+    .replace(/(?<!>)$/, '</p>');
+}
 
 export function htmlToPortableText(
   html: string,
@@ -98,17 +112,6 @@ export function htmlToPortableText(
   return blocks as unknown as PortableTextLike[];
 }
 
-function normalizeWordPressHtml(html: string): string {
-  return html
-    .replace(/<!--\s*wp:[^>]*-->/g, '')
-    .replace(/<!--\s*\/wp:[^>]*-->/g, '')
-    .replace(/\r\n/g, '\n')
-    .replace(/\n{3,}/g, '\n\n')
-    .replace(/(?<!<\/(?:p|h[1-6]|li|blockquote|pre|ul|ol)>)\n\n/g, '</p><p>')
-    .replace(/^(?!<)/, '<p>')
-    .replace(/(?<!>)$/, '</p>');
-}
-
 export function extractImageUrls(html: string): string[] {
   if (!html) return [];
   const urls = new Set<string>();
@@ -118,4 +121,11 @@ export function extractImageUrls(html: string): string[] {
     if (src) urls.add(src);
   }
   return [...urls];
+}
+
+export function stripHtml(s: string): string {
+  return s
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
 }

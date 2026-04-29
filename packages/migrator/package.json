@@ -1,9 +1,9 @@
 {
   "name": "@wp2astro/migrator",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "WordPress WXR to Sanity migrator CLI.",
+  "description": "WordPress WXR to Sanity migrator CLI. Thin Node wrapper over @wp2astro/migrator-core.",
   "bin": {
     "wp2astro": "./bin/wp2astro.mjs"
   },
@@ -13,20 +13,13 @@
     "dev": "node --import tsx --watch ./bin/wp2astro.mjs"
   },
   "dependencies": {
-    "@sanity/block-tools": "^3.68.3",
     "@sanity/client": "^6.24.1",
-    "@sanity/schema": "^3.68.3",
+    "@wp2astro/migrator-core": "workspace:*",
     "chalk": "^5.4.1",
     "commander": "^12.1.0",
-    "fast-xml-parser": "^4.5.1",
-    "jsdom": "^25.0.1",
-    "mime-types": "^2.1.35",
-    "ora": "^8.1.1",
-    "p-limit": "^6.2.0"
+    "ora": "^8.1.1"
   },
   "devDependencies": {
-    "@types/jsdom": "^21.1.7",
-    "@types/mime-types": "^2.1.4",
     "@types/node": "^22.10.5",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"

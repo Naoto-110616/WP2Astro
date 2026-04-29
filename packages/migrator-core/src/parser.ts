@@ -1,6 +1,5 @@
-import { readFile } from 'node:fs/promises';
 import { XMLParser } from 'fast-xml-parser';
-import type { WXRAuthor, WXRData, WXRPost, WXRTerm } from './types.js';
+import type { WXRAuthor, WXRData, WXRPost, WXRPostCategory, WXRTerm } from './types.js';
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -24,8 +23,12 @@ const text = (node: unknown): string => {
   return String(node);
 };
 
-export async function parseWXR(filePath: string): Promise<WXRData> {
-  const xml = await readFile(filePath, 'utf-8');
+/**
+ * Parse a WordPress eXtended RSS (WXR) document from a string.
+ * Runtime-agnostic — no filesystem access. The CLI provides a thin
+ * `parseWXRFromFile` wrapper that calls this.
+ */
+export function parseWXRFromString(xml: string): WXRData {
   const parsed = parser.parse(xml);
 
   const channel = parsed?.rss?.channel;
@@ -57,7 +60,7 @@ export async function parseWXR(filePath: string): Promise<WXRData> {
   ];
 
   const posts: WXRPost[] = asArray<Record<string, unknown>>(channel.item).map((item) => {
-    const cats = asArray<Record<string, unknown>>(item.category).map((c) => ({
+    const cats: WXRPostCategory[] = asArray<Record<string, unknown>>(item.category).map((c) => ({
       domain: String(c['@_domain'] ?? ''),
       slug: String(c['@_nicename'] ?? ''),
       name: text(c),
